@@ -105,10 +105,69 @@ class Question:
             ]
         }
         # Add more
+]
+    all_questions = []
 
-    ]
+    def __init__(self, question_text, answers, correct_indx):
+        self.question_text = question_text
+        self.answers = answers
+        self.correct_indx = correct_indx
+        Question.all_questions.append(self)
 
-    def __init__(self):
+    def ask_user(self):
+        print(self.question_text)
+        for i, answer_text in enumerate(self.answers):
+            print(f'{i}: {answer_text}')
+        user_answer_indx = int(input('Enter your answer: '))
+        if user_answer_indx == self.correct_indx:
+            print('correct!')
+        else:
+            print('incorrect!')
+
+
+q1 = Question('What is the output of the following Python code?\nprint(2 + 2)', 
+              answers=[4, 5, 3, 2], correct_indx=0)
+
+q2 = Question('What does the len() function in Python do?', 
+              answers=['Computes the square root of a number',
+                       'Returns the length of a list or string', 
+                       'Performs a bitwise AND operation', 
+                       'Raises a number to a power'], correct_indx=1)
+        
+q3 = Question('What is the correct way to comment out a single line in Python?', 
+              answers=['// Comment', '<!-- Comment -->', '/* Comment */', '# Comment'], correct_indx=3)
+
+q4 = Question('Which of the following data types is mutable in Python?', 
+              answers=['Integer', 'Tuple', 'List', 'String'], correct_indx=2)
+                
+q5 = Question('What is the result of the expression 3 * \'abc\' in Python?', 
+              answers=['\'abc abc abc\'', '\'abcabc\'', '\'abcabcabc\'', '\'abc\''], correct_indx=2)
+
+q6 = Question('Which of the following statements is used to exit from a loop in Python?', 
+              answers=['pass', 'break', 'None', 'continue'], correct_indx=1)
+
+q7 = Question('What is the output of the following code?\nprint("Python"[::-1])', 
+              answers=['\'nohtyP\'', '\'Python\'', '\'Pyth\'', '\'ytho\''], correct_indx=0)
+
+q8 = Question('What method in Python is used to add an element to the end of a list?', 
+              answers=['add()', 'insert()', 'extend()', 'append()'], correct_indx=3)
+
+q9 = Question('What does the __init__ method in Python represent?', 
+              answers=['Destructor method', 'Class method', 'Constructor method', 'Inheritance method'], correct_indx=2)
+
+q10 = Question('Which of the following statements is used to declare a function in Python?', 
+              answers=['def function():', 'function() { }', 'func def() { }', 'declare function():'], correct_indx=0)
+
+class Category:
+    def __init__(self, category):
+        self.category = category
         pass
+
+def question_call():
+    for question in Question.all_questions:
+        question.ask_user()
+
+question_call()
+
 
         
