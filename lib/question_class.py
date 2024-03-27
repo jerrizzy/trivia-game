@@ -1,5 +1,3 @@
-import time
-
 class Question:
 
     all_questions = []
@@ -22,7 +20,7 @@ class Question:
             print('incorrect!')
 
 
-q1 = Question('Python', 'What is the output of the following Python code?\nprint(2 + 2)', 
+q1 = Question('Python', 'What is the output of the following Python code? print(2 + 2)', 
               answers=[4, 5, 3, 2], correct_indx=0)
 
 q2 = Question('Python', 'What does the len() function in Python do?', 
@@ -67,5 +65,5 @@ def question_call():
 def intro():
     input('Would you like to play: \nyes or no')
 
-question_call()
+# question_call()
         

@@ -1,6 +1,8 @@
 import pygame
 from sys import exit
-from random import randint, choice
+from random import randint, choice, shuffle
+from question_class import Question
+import copy
 
 
 
@@ -14,7 +16,7 @@ def display_score():
     screen.blit(score_surface, score_rect)
     return current_time
 
-start_time = 5 # Set the initial time to 60 seconds
+start_time = 60 # Set the initial time to 60 seconds
 
 pygame.init() # this function starts pygame. like starting a car with a key
 screen = pygame.display.set_mode((800, 800)) # this is our (display surface). Point of origin 
@@ -24,6 +26,22 @@ screen = pygame.display.set_mode((800, 800)) # this is our (display surface). Po
 pygame.display.set_caption('Blade')# it names the game on the window
 clock = pygame.time.Clock() #Clock object keeps track of time and control frame rate. Here it does nothing, it's being called in the while loop
 test_font = pygame.font.Font('lib/font/Pixeltype.ttf', 50) #this works with our variable text_surface. It determines the kind of font, and size
+question_font = pygame.font.Font('lib/font/Pixeltype.ttf', 35)
+
+#Question boxes
+question_obj_list = Question.all_questions
+copied_question_list = copy.deepcopy(question_obj_list)
+shuffle(copied_question_list)
+print(len(copied_question_list))
+
+popped_obj = copied_question_list.pop()
+
+print(len(copied_question_list))
+
+q_text = popped_obj.question_text
+
+question_box = question_font.render(f'{q_text}', False, (111, 196, 170))
+question_box_rect = question_box.get_rect(center = (400, 100))
 
 # boxes
 box_surface = pygame.Surface((100, 100)) # this creates item. tuple is the size of item = 100px by 100px
@@ -95,7 +113,9 @@ while True:
                 if box_intro_rect.collidepoint(event.pos):
                     game_active = True
                 
-    if game_active:       
+    if game_active:
+        screen.blit(question_box, question_box_rect)
+        
         # box_gravity += 0.005 #this moves the box faster
         # box_rect.x += box_gravity
         screen.blit(box_surface, box_rect) #blit grabs the rectangle drawn around the itemm surface from (midbottom) point from when we created the rect, and depends the point being grabbed, it positions the surface on x,y axis position: 400px to the left by 200px from the top
@@ -148,8 +168,6 @@ while True:
         screen.blit(box_intro, box_intro_rect)
         screen.blit(title_surface, title_rect)
         screen.blit(title_message, title_message_rect)
-        
-
 
     pygame.display.update()
     clock.tick(60)
