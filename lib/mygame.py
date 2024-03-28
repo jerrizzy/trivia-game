@@ -3,14 +3,16 @@ from sys import exit
 from random import randint, choice, shuffle
 from question_class import Question
 import copy
+import time
 
 
+shake_timer = time.time()
 
 def display_score():
     current_time = start_time - int(pygame.time.get_ticks() / 1000)
     current_time = max(0, current_time) # Ensure current_time doesn't go below 0
     score_surface = test_font.render(f'Time Alive: {current_time}', False, (64, 64, 64))
-    score_rect = score_surface.get_rect(center = (400, 50))
+    score_rect = score_surface.get_rect(center = (750, 50))
     pygame.draw.rect(screen, '#c0e8ec', score_rect)
     pygame.draw.rect(screen, '#c0e8ec', score_rect, 10)
     screen.blit(score_surface, score_rect)
@@ -22,7 +24,7 @@ def display_score():
 #     start_time = 5  # Reset start_time to its initial value
 
 
-start_time = 5 # Set the initial time to 60 seconds
+start_time = 60 # Set the initial time to 60 seconds
 
 pygame.init() # this function starts pygame. like starting a car with a key
 screen = pygame.display.set_mode((1500, 1000)) # this is our (display surface). Point of origin 
@@ -53,7 +55,7 @@ answer = popped_obj.answers
 def render_wrapped_text(text, font, color, box_width, box_height):
     # Start with the original font size
     font_size = font.size
-    text_surface = font.render(text, True, color)
+    text_surface = font.render(text, False, color)
     text_rect = text_surface.get_rect()
 
     # Check if the text exceeds the box width or height
@@ -79,19 +81,19 @@ def render_wrapped_text(text, font, color, box_width, box_height):
 # boxes
 box_surface = pygame.Surface((200, 200)) # this creates item. tuple is the size of item = 100px by 100px
 box_surface.fill('Red') #gives item color
-box_rect = box_surface.get_rect(midbottom = (400,300)) #get_rect is rectangle to contain the item so that it can be controlled. x,y axis position: 400px from the left by 200px from the top.
+box_rect = box_surface.get_rect(midbottom = (750,300)) #get_rect is rectangle to contain the item so that it can be controlled. x,y axis position: 400px from the left by 200px from the top.
 
 box_surface1 = pygame.Surface((200, 200)) 
 box_surface1.fill('Blue')
-box_rect1 = box_surface1.get_rect(midbottom = (400,450))
+box_rect1 = box_surface1.get_rect(midbottom = (750,550))
 
 box_surface2 = pygame.Surface((200, 200)) 
 box_surface2.fill('Green')
-box_rect2 = box_surface2.get_rect(midbottom = (400,600))
+box_rect2 = box_surface2.get_rect(midbottom = (750,750))
 
 box_surface3 = pygame.Surface((200, 200)) 
 box_surface3.fill('Yellow')
-box_rect3 = box_surface3.get_rect(midbottom = (400,750))
+box_rect3 = box_surface3.get_rect(midbottom = (750,900))
 
 #intro
 RED = (255, 0, 0)
@@ -110,6 +112,8 @@ intro_sound = pygame.mixer.Sound('lib/sound/dungeon_ambient_1.wav')
 
 destroyer_sound = pygame.mixer.Sound('lib/sound/8bit_bomb_explosion.wav')
 time_warp = pygame.mixer.Sound('lib/sound/space_shield.wav')
+time_speed = pygame.mixer.Sound('lib/sound/button1.wav')
+space = pygame.mixer.Sound('lib/sound/wind1.wav')
 
 box_gravity = 30
 
@@ -137,7 +141,7 @@ while True:
                 if box_rect.collidepoint(event.pos) and copied_question_list is not None:
                     print('collision')
                     correct_answer = answer[0]
-                    print(correct_answer)
+                    time_speed.play()
                     start_time += add_time # adds time when box is clicked
                     # move on to the next question code
                     popped_obj = copied_question_list.pop()
@@ -178,9 +182,10 @@ while True:
                     start_time += int(pygame.time.get_ticks() / 1000)
              
     if game_active and copied_question_list is not None:
+        space.play()
         intro_sound.stop()
         question_box = question_font.render(f'{counter}: {q_text}', False, (111, 196, 170))
-        question_box_rect = question_box.get_rect(center = (400, 100))
+        question_box_rect = question_box.get_rect(center = (750, 100))
 
 
         #boxes with answers
@@ -208,14 +213,14 @@ while True:
 
         screen.blit(answer_surface1, box_rect1)
         box_surface1.blit(answer_surface1, answer_rect1)
-        screen.blit(answer_surface1, (box_rect1.x, box_rect1.y))
+        # screen.blit(answer_surface1, (box_rect1.x, box_rect1.y))
         # box_rect1.x -= 5
-        # box_rect1.x += randint(-20, 20)
-        # box_rect1.y += randint(-20, 20)
-        if box_rect1.left <= 0: box_rect1.right = 1000
-        elif box_rect1.left <= 0: box_rect1.right = 1000
-        elif box_rect1.bottom >= 1000: box_rect1.top = 0
-        elif box_rect1.top <= 0: box_rect1.bottom = 1000
+        box_rect1.x += randint(-20, 20)
+        box_rect1.y += randint(-20, 20)
+        if box_rect1.left <= 0: box_rect1.right = 1500
+        elif box_rect1.left <= 0: box_rect1.right = 1500
+        elif box_rect1.bottom >= 1500: box_rect1.top = 0
+        elif box_rect1.top <= 0: box_rect1.bottom = 1500
 
         screen.blit(box_surface2, box_rect2)
         box_surface2.blit(answer_surface2, answer_rect2)
@@ -223,19 +228,19 @@ while True:
         # screen.blit(answer_surface2, (box_rect2.x, box_rect2.y))
         
         # box_rect2.x += 10
-        # box_rect2.x += randint(-20, 20)
-        # box_rect2.y += randint(-20, 20)
-        if box_rect2.right >= 950: box_rect2.left = 0
-        elif box_rect2.left <= 0: box_rect2.right = 950
-        elif box_rect2.bottom >= 950: box_rect2.top = 0
-        elif box_rect2.top <= 0: box_rect2.bottom = 950
+        box_rect2.x += randint(-20, 20)
+        box_rect2.y += randint(-20, 20)
+        if box_rect2.right >= 1500: box_rect2.left = 0
+        elif box_rect2.left <= 0: box_rect2.right = 1500
+        elif box_rect2.bottom >= 1500: box_rect2.top = 0
+        elif box_rect2.top <= 0: box_rect2.bottom = 1500
 
         screen.blit(box_surface3, box_rect3)
         # screen.blit(answer_surface3, (box_rect3.x, box_rect3.y))
         box_surface3.blit(answer_surface3, answer_rect3)
         # box_rect3.x -= 5
-        # box_rect3.x += randint(-20, 20)
-        # box_rect3.y += randint(-20, 20)
+        box_rect3.x += randint(-20, 20)
+        box_rect3.y += randint(-20, 20)
         if box_rect3.left <= 0: box_rect3.right = 1000
         elif box_rect3.left <= 0: box_rect3.right = 1000
         elif box_rect3.bottom >= 1000: box_rect3.top = 0
@@ -251,10 +256,20 @@ while True:
             game_active = False
     else:
         screen.fill('Red')
+        if clock.tick(10) and shake_timer >= 10:
+            shake_timer = time.time()
+            # Shake the box by adjusting its position randomly
+            box_intro_rect.x += randint(-20, 20)
+            box_intro_rect.y += randint(-20, 20)
+        # space_hole = pygame.image.load('lib/backdrop/blackhole2.png').convert()
+        # space_hole = pygame.transform.scale(box_intro, (0,0))
+
         screen.blit(box_intro, box_intro_rect)
+        # screen.blit(space_hole, (box_intro_rect.x, box_intro_rect.y))
         screen.blit(title_surface, title_rect)
         screen.blit(title_message, title_message_rect)
         intro_sound.play()
+        space.stop()
 
     pygame.display.update()
     clock.tick(60)
