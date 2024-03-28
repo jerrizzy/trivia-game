@@ -41,7 +41,7 @@ q5 = Question('Python', 'What is the result of the expression 3 * \'abc\' in Pyt
 q6 = Question('Python', 'Which of the following statements is used to exit from a loop in Python?', 
               answers=['pass', 'break', 'None', 'continue'], correct_indx=1)
 
-q7 = Question('Python', 'What is the output of the following code?\nprint("Python"[::-1])', 
+q7 = Question('Python', 'What is the output of the following code? ("Python"[::-1])', 
               answers=['\'nohtyP\'', '\'Python\'', '\'Pyth\'', '\'ytho\''], correct_indx=0)
 
 q8 = Question('Python', 'What method in Python is used to add an element to the end of a list?', 
