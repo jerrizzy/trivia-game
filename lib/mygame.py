@@ -34,7 +34,7 @@ screen = pygame.display.set_mode((1500, 1000)) # this is our (display surface). 
 pygame.display.set_caption('Blade')# it names the game on the window
 clock = pygame.time.Clock() #Clock object keeps track of time and control frame rate. Here it does nothing, it's being called in the while loop
 test_font = pygame.font.Font('lib/font/Pixeltype.ttf', 50) #this works with our variable text_surface. It determines the kind of font, and size
-question_font = pygame.font.Font('lib/font/Pixeltype.ttf', 35)
+question_font = pygame.font.Font('lib/font/Pixeltype.ttf', 60)
 
 intro_font = pygame.font.Font('lib/font/Pixeltype.ttf', 100)
 
@@ -54,15 +54,16 @@ answer = popped_obj.answers
 
 def render_wrapped_text(text, font, color, box_width, box_height):
     # Start with the original font size
-    font_size = font.size
+    # font_size = font.size()
+    print(font)
     text_surface = font.render(text, False, color)
     text_rect = text_surface.get_rect()
 
     # Check if the text exceeds the box width or height
     while text_rect.width > box_width or text_rect.height > box_height:
         # Reduce the font size
-        font_size += -1
-        font = pygame.font.Font(font.path, font_size)
+        # font_size += -1
+        font = pygame.font.Font('lib/font/Pixeltype.ttf', 16)
 
         # Render the text with the new font size
         text_surface = font.render(text, True, color)
@@ -99,7 +100,7 @@ box_rect3 = box_surface3.get_rect(midbottom = (750,900))
 RED = (255, 0, 0)
 radius = 20
 box_intro = pygame.Surface((200, 200)) #size
-box_intro.fill(choice([(0, 0, 255), (255, 0, 0), (255, 255, 0)])) #random color
+box_intro.fill(choice(['#FF204E', "#070F2B", "#FC6736", "#FFD23F"])) #random color
 box_intro_rect = box_intro.get_rect(midbottom = (750,500)) #position
 
 title_surface = intro_font.render('Space Trivia', False, (111, 196, 170))
@@ -150,7 +151,8 @@ while True:
                     counter += 1
                 else:
                     game_active = False
-                    copied_question_list = 0
+                    copied_question_list = copy.deepcopy(question_obj_list)
+                    shuffle(copied_question_list)
                     
                     
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -211,9 +213,11 @@ while True:
         elif box_rect.bottom >= 950: box_rect.top = 0
         elif box_rect.top <= 0: box_rect.bottom = 950
 
-        screen.blit(answer_surface1, box_rect1)
+        screen.blit(answer_surface1, (box_rect1.x, box_rect1.y))
         box_surface1.blit(answer_surface1, answer_rect1)
-        # screen.blit(answer_surface1, (box_rect1.x, box_rect1.y))
+        screen.blit(answer_surface1, box_rect1)
+        
+        
         # box_rect1.x -= 5
         box_rect1.x += randint(-20, 20)
         box_rect1.y += randint(-20, 20)
