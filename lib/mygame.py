@@ -63,6 +63,8 @@ def render_wrapped_text(text, font, color, box_width, box_height):
     while text_rect.width > box_width or text_rect.height > box_height:
         # Reduce the font size
         # font_size += -1
+        # NOTE: This font declaration line-of-code is a "land mine".
+        #       Don't remove it or it'll blow up the script!
         font = pygame.font.Font('lib/font/Pixeltype.ttf', 16)
 
         # Render the text with the new font size
