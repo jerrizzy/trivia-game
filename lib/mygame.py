@@ -55,7 +55,7 @@ answer = popped_obj.answers
 def render_wrapped_text(text, font, color, box_width, box_height):
     # Start with the original font size
     # font_size = font.size()
-    print(font)
+    # print(font)
     text_surface = font.render(text, False, color)
     text_rect = text_surface.get_rect()
 
@@ -139,9 +139,9 @@ while True:
             pygame.quit()# this quits the game
             exit()
 
-        if game_active:
+        if game_active and copied_question_list is not None:
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if box_rect.collidepoint(event.pos) and copied_question_list is not None:
+                if box_rect.collidepoint(event.pos):
                     print('collision')
                     correct_answer = answer[0]
                     time_speed.play()
@@ -151,39 +151,51 @@ while True:
                     q_text = popped_obj.question_text
                     answer = popped_obj.answers
                     counter += 1
-                else:
-                    game_active = False
-                    copied_question_list = copy.deepcopy(question_obj_list)
-                    shuffle(copied_question_list)
+                # NOTE: This else case was previously breaking our code by ensuring that
+                #       if the player clicked anything besides the red box, the game 
+                #       immediately resets because the `game_active` flag is immediately
+                #       set to `False`.
+                # else:
+                    # game_active = False
+                    # copied_question_list = copy.deepcopy(question_obj_list)
+                    # shuffle(copied_question_list)
                     
                     
-            if event.type == pygame.MOUSEBUTTONDOWN:
                 if box_rect1.collidepoint(event.pos):
                     print('collision')
                     wrong_answer1 = answer[1]
                     start_time -= add_time # decrease time when box is clicked
                     # add move on to the next question code
                     time_warp.play()
+                    popped_obj = copied_question_list.pop()
+                    q_text = popped_obj.question_text
+                    answer = popped_obj.answers
+                    counter += 1
 
-            if event.type == pygame.MOUSEBUTTONDOWN:
                 if box_rect2.collidepoint(event.pos):
                     wrong_answer2 = answer[2]
                     print('collision') #clicking on this box neither increase or decrease time
                     # add move on to the next question code
+                    popped_obj = copied_question_list.pop()
+                    q_text = popped_obj.question_text
+                    answer = popped_obj.answers
+                    counter += 1
 
-            if event.type == pygame.MOUSEBUTTONDOWN:
                 if box_rect3.collidepoint(event.pos):
                     wrong_answer3 = answer[3]
                     print('collision')
                     start_time = 0 # kills the time when box is clicked
                     # add move on to the next question code
+                    popped_obj = copied_question_list.pop()
+                    q_text = popped_obj.question_text
+                    answer = popped_obj.answers
+                    counter += 1
                     destroyer_sound.play()
         else:
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if box_intro_rect.collidepoint(event.pos):
-                    # resetgame()
-                    game_active = True
-                    start_time += int(pygame.time.get_ticks() / 1000)
+            if event.type == pygame.MOUSEBUTTONDOWN and box_intro_rect.collidepoint(event.pos):
+                # resetgame()
+                game_active = True
+                start_time += int(pygame.time.get_ticks() / 1000)
              
     if game_active and copied_question_list is not None:
         space.play()
@@ -191,22 +203,105 @@ while True:
         question_box = question_font.render(f'{counter}: {q_text}', False, (111, 196, 170))
         question_box_rect = question_box.get_rect(center = (750, 100))
 
-
-        #boxes with answers
-        answer_surface, answer_rect = render_wrapped_text(f'{answer[0]}', test_font, (111, 196, 170), box_rect.width, box_rect.height)
-        # answer_surface1 = test_font.render(f'{answer[1]}', False, (111, 196, 170))
-        answer_surface1, answer_rect1 = render_wrapped_text(f'{answer[1]}', test_font, (111, 196, 170), box_rect1.width, box_rect1.height)
-        answer_surface2, answer_rect2 = render_wrapped_text(f'{answer[2]}', test_font, (111, 196, 170), box_rect2.width, box_rect2.height)
-        answer_surface3, answer_rect3 = render_wrapped_text(f'{answer[3]}', test_font, (111, 196, 170), box_rect3.width, box_rect3.height)
-
         screen.blit(question_box, question_box_rect)
-        
+
         # box_gravity += 0.005 #this moves the box faster
         # box_rect.x += box_gravity
+
+        ################################################################################
+        ################################################################################
+        ################################################################################
+
         screen.blit(box_surface, box_rect) #blit grabs the rectangle drawn around the itemm surface from (midbottom) point from when we created the rect, and depends the point being grabbed, it positions the surface on x,y axis position: 400px to the left by 200px from the top
+        screen.blit(box_surface1, box_rect1)
+        screen.blit(box_surface2, box_rect2)
+        screen.blit(box_surface3, box_rect3)
+
+        """
+        When we're on Level 1,
+            we blit the box with answers on screen.
+        When we're on Level 2->,
+            we blit over the original box with a new blank box and new answer.
+        ...
+        """
+
+        if counter == 1:
+            #boxes with answers
+            answer_surface, answer_rect = render_wrapped_text(f'{answer[0]}', test_font, (111, 196, 170), box_rect.width, box_rect.height)
+            # answer_surface1 = test_font.render(f'{answer[1]}', False, (111, 196, 170))
+            answer_surface1, answer_rect1 = render_wrapped_text(f'{answer[1]}', test_font, (111, 196, 170), box_rect1.width, box_rect1.height)
+            answer_surface2, answer_rect2 = render_wrapped_text(f'{answer[2]}', test_font, (111, 196, 170), box_rect2.width, box_rect2.height)
+            answer_surface3, answer_rect3 = render_wrapped_text(f'{answer[3]}', test_font, (111, 196, 170), box_rect3.width, box_rect3.height)
+
+            # SUCCESSFUL RENDER AND CONNECTION OF RED BOX TO RED TEXT
+            box_surface.blit(answer_surface, answer_rect)
+
+            # ATTEMPT TO FIX RENDER/CONNNECTION OF BLUE-TO-BLUE BOX-TO-RECT
+            box_surface1.blit(answer_surface1, answer_rect1)
+
+            # SUCCESSFUL RENDER AND CONNECTION OF GREEN BOX TO GREEN TEXT
+            box_surface2.blit(answer_surface2, answer_rect2)
+
+            # SUCCESSFUL RENDER AND CONNECTION OF YELLOW BOX TO YELLOW TEXT
+            box_surface3.blit(answer_surface3, answer_rect3)
+
+        elif counter > 1:
+            # Create new region for new red box content
+            new_red_region = pygame.Surface((200, 200))
+            new_red_region.fill("Red")
+            new_red_rectangle = new_red_region.get_rect(midbottom = (750,300))
+            # Extract new game objects for updated red box answers
+            answer_surface, answer_rect = render_wrapped_text(f'{answer[0]}', test_font, (111, 196, 170), box_rect.width, box_rect.height)
+            # Render updated red box answers to newly created red region
+            new_red_region.blit(answer_surface, answer_rect)
+            # Render new red region to screen
+            screen.blit(new_red_region, box_rect)
+
+            # Create new region for new blue box content
+            new_blue_region = pygame.Surface((200, 200))
+            new_blue_region.fill("Blue")
+            new_blue_rectangle = new_blue_region.get_rect(midbottom = (750,300))
+            # Extract new game objects for updated red box answers
+            answer_surface1, answer_rect1 = render_wrapped_text(f'{answer[1]}', test_font, (111, 196, 170), box_rect1.width, box_rect1.height)
+            # Render updated red box answers to newly created red region
+            new_blue_region.blit(answer_surface1, answer_rect1)
+            # Render new red region to screen
+            screen.blit(new_blue_region, box_rect1)
+
+            # Create new region for new red box content
+            new_green_region = pygame.Surface((200, 200))
+            new_green_region.fill("Green")
+            new_green_rectangle = new_green_region.get_rect(midbottom = (750,300))
+            # Extract new game objects for updated red box answers
+            answer_surface2, answer_rect2 = render_wrapped_text(f'{answer[2]}', test_font, (111, 196, 170), box_rect2.width, box_rect2.height)
+            # Render updated red box answers to newly created red region
+            new_green_region.blit(answer_surface2, answer_rect2)
+            # Render new red region to screen
+            screen.blit(new_green_region, box_rect2)
+
+            # Create new region for new red box content
+            new_yellow_region = pygame.Surface((200, 200))
+            new_yellow_region.fill("Yellow")
+            new_yellow_rectangle = new_yellow_region.get_rect(midbottom = (750,300))
+            # Extract new game objects for updated red box answers
+            answer_surface3, answer_rect3 = render_wrapped_text(f'{answer[3]}', test_font, (111, 196, 170), box_rect3.width, box_rect3.height)
+            # Render updated red box answers to newly created red region
+            new_yellow_region.blit(answer_surface3, answer_rect3)
+            # Render new red region to screen
+            screen.blit(new_yellow_region, box_rect3)
+
+
+        ################################################################################
+        ################################################################################
+        ################################################################################
+
+        # UNSUCCESSFUL RENDER AND CONNECTION OF BLUE BOX TO BLUE TEXT
+        # screen.blit(answer_surface1, (box_rect1.x, box_rect1.y))
+        # box_surface1.blit(answer_surface1, answer_rect1)
+        # screen.blit(answer_surface1, box_rect1)
+        
         # box_rect.x += 10 #moves the box on x axis
         # Attempting to randomly move box in both X and Y
-        box_surface.blit(answer_surface, answer_rect)
         
         box_rect.x += randint(-20, 20)
         box_rect.y += randint(-20, 20)
@@ -215,10 +310,9 @@ while True:
         elif box_rect.bottom >= 950: box_rect.top = 0
         elif box_rect.top <= 0: box_rect.bottom = 950
 
-        screen.blit(answer_surface1, (box_rect1.x, box_rect1.y))
-        box_surface1.blit(answer_surface1, answer_rect1)
-        screen.blit(answer_surface1, box_rect1)
-        
+        # NOTE: This 
+        # screen.blit(blue_box_clickable_region, blue_box_rectangle_visual)
+        # blue_box_clickable_region.blit(blue_answer_clickable_region, blue_answer_rectangle_visual)
         
         # box_rect1.x -= 5
         box_rect1.x += randint(-20, 20)
@@ -227,11 +321,6 @@ while True:
         elif box_rect1.left <= 0: box_rect1.right = 1500
         elif box_rect1.bottom >= 1500: box_rect1.top = 0
         elif box_rect1.top <= 0: box_rect1.bottom = 1500
-
-        screen.blit(box_surface2, box_rect2)
-        box_surface2.blit(answer_surface2, answer_rect2)
-         
-        # screen.blit(answer_surface2, (box_rect2.x, box_rect2.y))
         
         # box_rect2.x += 10
         box_rect2.x += randint(-20, 20)
@@ -241,9 +330,7 @@ while True:
         elif box_rect2.bottom >= 1500: box_rect2.top = 0
         elif box_rect2.top <= 0: box_rect2.bottom = 1500
 
-        screen.blit(box_surface3, box_rect3)
         # screen.blit(answer_surface3, (box_rect3.x, box_rect3.y))
-        box_surface3.blit(answer_surface3, answer_rect3)
         # box_rect3.x -= 5
         box_rect3.x += randint(-20, 20)
         box_rect3.y += randint(-20, 20)
