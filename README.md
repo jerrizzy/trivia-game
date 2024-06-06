@@ -11,11 +11,13 @@ After constructing all the question objects via the Python classes, we imported 
 The gameplay is for each question the player has four answers in a box, different colors, and only one has a 100% accurate answer. 
 Based on which box the player chooses determines if 5 seconds get added to the gameplay time, 5 seconds is removed, no time is removed or kills the whole game if the answer is egregiously wrong.
 
-To choose a box, player musts click on the box. Used collidepoint method is used to pinpoint the position of the boxes on the screen.
+To choose a box, player musts click on the box. 
+Used collidepoint method is used to pinpoint the position of the boxes on the screen.
 
 ###BUGS TO FIX###
-After gameplay time is not reset back to the initial 60 seconds.
 
+
+After gameplay time is not reset back to the initial 60 seconds.
 
 to play game:
 Open trivia-game in VsCode
