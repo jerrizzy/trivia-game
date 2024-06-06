@@ -15,10 +15,10 @@ To choose a box, player musts click on the box.
 Used collidepoint method is used to pinpoint the position of the boxes on the screen.
 
 ###BUGS TO FIX###
-
 After gameplay time is not reset back to the initial 60 seconds.
 
 to play game:
+
 Open trivia-game in VsCode
-then 
+then
 python lib/mygame.py
