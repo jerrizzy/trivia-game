@@ -16,7 +16,6 @@ Used collidepoint method is used to pinpoint the position of the boxes on the sc
 
 ###BUGS TO FIX###
 
-
 After gameplay time is not reset back to the initial 60 seconds.
 
 to play game:
