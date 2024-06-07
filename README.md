@@ -25,3 +25,5 @@ Open trivia-game in VsCode
 then
 
 python lib/mygame.py
+
+Demo: https://www.loom.com/share/e42c3612d234400d844d9a588798b662
